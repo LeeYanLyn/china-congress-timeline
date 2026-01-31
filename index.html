@@ -22,7 +22,7 @@
         header h1 { font-size: 1.5em; margin-bottom: 6px; }
         header p { opacity: 0.9; font-size: 0.85em; }
         
-        /* 可折叠图例区域 */
+        /* 图例栏 */
         .legend-bar {
             background: white;
             padding: 12px 20px;
@@ -45,9 +45,7 @@
             font-size: 0.9em;
         }
         
-        .legend-item:hover {
-            background: #f5f5f5;
-        }
+        .legend-item:hover { background: #f5f5f5; }
         
         .legend-item .dot {
             width: 12px;
@@ -64,9 +62,7 @@
             color: #999;
         }
         
-        .legend-item.expanded .arrow {
-            transform: rotate(180deg);
-        }
+        .legend-item.expanded .arrow { transform: rotate(180deg); }
         
         /* 折叠介绍面板 */
         .intro-panel {
@@ -76,43 +72,40 @@
             background: #fafafa;
         }
         
-        .intro-panel.show {
-            max-height: 300px;
-        }
+        .intro-panel.show { max-height: 350px; }
         
         .intro-content {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 15px 20px;
-            font-size: 0.85em;
-            line-height: 1.7;
+            padding: 20px;
+            font-size: 0.9em;
+            line-height: 1.8;
             color: #555;
+            text-align: left;
         }
         
-        .intro-content .title {
+        .intro-row {
+            margin-bottom: 10px;
+        }
+        
+        .intro-row .label {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-right: 8px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         
-        .intro-content .title .badge {
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 0.8em;
-        }
-        
-        .intro-content.congress .title .badge { background: #ffebee; color: #c62828; }
-        .intro-content.plenary .title .badge { background: #e3f2fd; color: #1565c0; }
+        .intro-content.congress .label { background: #ffebee; color: #c62828; }
+        .intro-content.plenary .label { background: #e3f2fd; color: #1565c0; }
         
         .intro-content ul {
-            padding-left: 20px;
-            margin-top: 6px;
+            padding-left: 24px;
+            margin-top: 8px;
         }
         
-        .intro-content li { margin-bottom: 3px; }
+        .intro-content li { margin-bottom: 4px; }
         
         /* 时间轴区域 */
         .timeline-section {
@@ -135,7 +128,6 @@
         .timeline-header strong { color: #333; }
         .timeline-header span { color: #999; font-size: 0.9em; }
         
-        /* 时间轴滚动容器 */
         .timeline-scroll {
             overflow-x: auto;
             overflow-y: hidden;
@@ -150,7 +142,6 @@
             position: relative;
         }
         
-        /* 时间轴线 */
         .timeline-track::before {
             content: '';
             position: absolute;
@@ -175,9 +166,7 @@
             z-index: 1;
         }
         
-        .node:hover {
-            transform: scale(1.1);
-        }
+        .node:hover { transform: scale(1.1); }
         
         .node.active .node-dot {
             transform: scale(1.5);
@@ -216,30 +205,26 @@
             white-space: nowrap;
         }
         
-        /* 详情面板 */
+        /* 详情面板 - 铺满网页 */
         #details { 
-            margin: 15px;
             display: none;
-        }
-        
-        .detail-card {
-            max-width: 700px;
-            margin: 0 auto;
             background: white;
+            margin: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
             overflow: hidden;
-            animation: slideUp 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
         
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .detail-header {
-            padding: 18px 22px;
+            padding: 25px;
             color: white;
+            text-align: center;
             position: relative;
         }
         
@@ -247,60 +232,73 @@
         .detail-header.plenary { background: linear-gradient(135deg, #1565c0, #0d47a1); }
         
         .detail-header h3 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
+            font-size: 1.5em;
+            margin-bottom: 12px;
         }
         
         .detail-meta {
             display: flex;
-            gap: 20px;
-            font-size: 0.9em;
+            justify-content: center;
+            gap: 30px;
+            font-size: 0.95em;
             opacity: 0.95;
         }
         
         .close-btn {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 26px;
-            height: 26px;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
             border: none;
             background: rgba(255,255,255,0.2);
             color: white;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 16px;
-            line-height: 24px;
+            font-size: 18px;
+            line-height: 28px;
         }
         
         .close-btn:hover { background: rgba(255,255,255,0.3); }
         
-        .detail-body { padding: 18px 22px; }
+        /* 详情内容 - 两列布局 */
+        .detail-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
         
-        .detail-section { margin-bottom: 15px; }
-        .detail-section:last-child { margin-bottom: 0; }
+        .detail-column {
+            padding: 25px 30px;
+        }
         
-        .detail-section h4 {
-            font-size: 0.75em;
+        .detail-column:first-child {
+            border-right: 1px solid #eee;
+        }
+        
+        .detail-column h4 {
+            font-size: 0.85em;
             color: #999;
-            margin-bottom: 6px;
+            margin-bottom: 15px;
             letter-spacing: 1px;
+            text-align: center;
         }
         
-        .detail-section p {
-            line-height: 1.8;
+        .detail-column p {
+            line-height: 2;
             color: #444;
-            font-size: 0.9em;
+            font-size: 0.95em;
+            text-align: left;
+            text-indent: 2em;
         }
         
-        .highlight-box {
+        .detail-column.significance {
             background: linear-gradient(135deg, #fffde7, #fff9c4);
-            padding: 12px 15px;
-            border-radius: 6px;
-            border-left: 3px solid #ffc107;
         }
         
-        .highlight-box p { color: #5d4037; }
+        .detail-column.significance p {
+            color: #5d4037;
+        }
         
         footer { 
             text-align: center; 
@@ -309,10 +307,12 @@
             font-size: 0.8em;
         }
         
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
             header h1 { font-size: 1.2em; }
             .legend-bar { gap: 15px; }
-            .detail-meta { flex-direction: column; gap: 5px; }
+            .detail-meta { flex-direction: column; gap: 8px; }
+            .detail-body { grid-template-columns: 1fr; }
+            .detail-column:first-child { border-right: none; border-bottom: 1px solid #eee; }
             .node { width: 50px; }
         }
     </style>
@@ -338,16 +338,25 @@
     </div>
 </div>
 
-<!-- 党代会介绍（可折叠） -->
+<!-- 党代会介绍 -->
 <div class="intro-panel" id="panel-congress">
     <div class="intro-content congress">
-        <div class="title">
-            <span class="badge">X大</span>
-            全称：中国共产党第X次全国代表大会
+        <div class="intro-row">
+            <span class="label">简称</span>X大（如"二十大"）
         </div>
-        <div>
-            <strong>召开周期：</strong>每五年一次，由中央委员会召集<br>
-            <strong>地位：</strong>党的最高领导机关<br>
+        <div class="intro-row">
+            <span class="label">全称</span>
+        </div>
+        <div class="intro-row" style="padding-left: 20px;">
+            中国共产党第X次全国代表大会
+        </div>
+        <div class="intro-row">
+            <strong>召开周期：</strong>每五年一次，由中央委员会召集
+        </div>
+        <div class="intro-row">
+            <strong>地位：</strong>党的最高领导机关
+        </div>
+        <div class="intro-row">
             <strong>主要职责：</strong>
             <ul>
                 <li>修改党章</li>
@@ -358,15 +367,22 @@
     </div>
 </div>
 
-<!-- 全会介绍（可折叠） -->
+<!-- 全会介绍 -->
 <div class="intro-panel" id="panel-plenary">
     <div class="intro-content plenary">
-        <div class="title">
-            <span class="badge">X届Y中全会</span>
-            全称：中国共产党第X届中央委员会第Y次全体会议
+        <div class="intro-row">
+            <span class="label">简称</span>X届Y中全会（如"二十届三中全会"）
         </div>
-        <div>
-            <strong>召开周期：</strong>每届通常召开七次（一中全会到七中全会）<br>
+        <div class="intro-row">
+            <span class="label">全称</span>
+        </div>
+        <div class="intro-row" style="padding-left: 20px;">
+            中国共产党第X届中央委员会第Y次全体会议
+        </div>
+        <div class="intro-row">
+            <strong>召开周期：</strong>每届通常召开七次（一中全会到七中全会）
+        </div>
+        <div class="intro-row">
             <strong>说明：</strong>党代会选出新一届中央委员会后，该届中央委员会在其五年任期内召开的全体会议
         </div>
     </div>
@@ -379,34 +395,28 @@
         <span>← 滑动查看 →</span>
     </div>
     <div class="timeline-scroll">
-        <div class="timeline-track" id="timeline-track">
-            <!-- 动态生成 -->
-        </div>
+        <div class="timeline-track" id="timeline-track"></div>
     </div>
 </div>
 
-<!-- 详情 -->
+<!-- 详情面板 -->
 <div id="details">
-    <div class="detail-card">
-        <div class="detail-header" id="detail-header">
-            <button class="close-btn" id="close-btn">×</button>
-            <h3 id="conf-title">会议名称</h3>
-            <div class="detail-meta">
-                <span>📅 <span id="conf-time"></span></span>
-                <span>📍 <span id="conf-place"></span></span>
-            </div>
+    <div class="detail-header" id="detail-header">
+        <button class="close-btn" id="close-btn">×</button>
+        <h3 id="conf-title">会议名称</h3>
+        <div class="detail-meta">
+            <span>📅 <span id="conf-time"></span></span>
+            <span>📍 <span id="conf-place"></span></span>
         </div>
-        <div class="detail-body">
-            <div class="detail-section">
-                <h4>会议内容</h4>
-                <p id="conf-desc"></p>
-            </div>
-            <div class="detail-section">
-                <h4>历史意义</h4>
-                <div class="highlight-box">
-                    <p id="conf-significance"></p>
-                </div>
-            </div>
+    </div>
+    <div class="detail-body">
+        <div class="detail-column">
+            <h4>会议内容</h4>
+            <p id="conf-desc"></p>
+        </div>
+        <div class="detail-column significance">
+            <h4>历史意义</h4>
+            <p id="conf-significance"></p>
         </div>
     </div>
 </div>
