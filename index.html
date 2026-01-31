@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; 
-            background: #f5f5f5;
+            background: #f0f2f5;
             color: #333;
             min-height: 100vh;
         }
@@ -16,58 +16,144 @@
         header { 
             background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
             color: white; 
-            padding: 20px; 
+            padding: 25px 20px; 
             text-align: center; 
         }
-        header h1 { font-size: 1.5em; margin-bottom: 8px; }
-        header p { opacity: 0.9; font-size: 0.85em; }
+        header h1 { font-size: 1.6em; margin-bottom: 8px; }
+        header p { opacity: 0.9; font-size: 0.9em; }
         
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 15px;
-            background: white;
-            border-bottom: 1px solid #eee;
+        /* 图例介绍区域 */
+        .intro-section {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
         
-        .legend-item {
+        .intro-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .intro-header {
+            padding: 12px 18px;
+            color: white;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9em;
+            gap: 10px;
         }
         
-        .legend-dot {
-            width: 14px;
-            height: 14px;
+        .intro-header.congress {
+            background: linear-gradient(135deg, #c62828, #b71c1c);
+        }
+        
+        .intro-header.plenary {
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+        }
+        
+        .intro-dot {
+            width: 12px;
+            height: 12px;
+            background: white;
             border-radius: 50%;
+            flex-shrink: 0;
         }
         
-        .legend-dot.congress { background: #c62828; }
-        .legend-dot.plenary { background: #1565c0; }
+        .intro-header h3 {
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        .intro-body {
+            padding: 15px 18px;
+            font-size: 0.85em;
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        .intro-body .naming {
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 3px solid #ddd;
+        }
+        
+        .intro-body .naming.congress { border-left-color: #c62828; }
+        .intro-body .naming.plenary { border-left-color: #1565c0; }
+        
+        .intro-body .naming strong {
+            color: #333;
+        }
+        
+        .intro-body ul {
+            padding-left: 18px;
+            margin-top: 8px;
+        }
+        
+        .intro-body li {
+            margin-bottom: 4px;
+        }
+        
+        .intro-body .label {
+            display: inline-block;
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+        
+        .intro-body .label.congress { background: #ffebee; color: #c62828; }
+        .intro-body .label.plenary { background: #e3f2fd; color: #1565c0; }
         
         /* 时间轴容器 */
-        .timeline-wrapper {
+        .timeline-section {
             background: white;
-            padding: 30px 20px;
+            margin: 20px auto;
+            max-width: 1000px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        
+        .timeline-title {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .timeline-title span {
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        .timeline-wrapper {
+            padding: 25px 15px;
             overflow-x: auto;
         }
         
         .timeline-container {
             position: relative;
             min-width: 100%;
-            padding: 60px 40px 40px;
+            padding: 50px 30px 35px;
         }
         
         /* 时间轴线 */
         .timeline-line {
             position: absolute;
-            left: 40px;
-            right: 40px;
+            left: 30px;
+            right: 30px;
             top: 50%;
-            height: 4px;
-            background: linear-gradient(90deg, #e0e0e0, #bdbdbd, #e0e0e0);
+            height: 3px;
+            background: linear-gradient(90deg, #e8e8e8, #d0d0d0, #e8e8e8);
             border-radius: 2px;
         }
         
@@ -77,7 +163,7 @@
             justify-content: space-between;
             position: relative;
             min-width: max-content;
-            gap: 8px;
+            gap: 6px;
         }
         
         /* 单个会议点 */
@@ -87,40 +173,39 @@
             align-items: center;
             cursor: pointer;
             transition: transform 0.2s;
-            min-width: 50px;
+            min-width: 48px;
         }
         
         .timeline-item:hover {
-            transform: scale(1.1);
+            transform: scale(1.08);
         }
         
         .timeline-item.active .item-dot {
-            transform: scale(1.3);
+            transform: scale(1.4);
             box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
         }
         
         /* 会议标签（上方） */
         .item-label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             margin-bottom: 8px;
             white-space: nowrap;
             text-align: center;
-            padding: 3px 6px;
+            padding: 2px 5px;
             border-radius: 3px;
-            background: #f5f5f5;
         }
         
-        .timeline-item.congress .item-label { color: #c62828; }
-        .timeline-item.plenary .item-label { color: #1565c0; }
+        .timeline-item.congress .item-label { color: #c62828; background: #fff5f5; }
+        .timeline-item.plenary .item-label { color: #1565c0; background: #f0f7ff; }
         
         /* 会议圆点 */
         .item-dot {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: all 0.2s;
             z-index: 1;
         }
@@ -130,8 +215,8 @@
         
         /* 时间标签（下方） */
         .item-time {
-            font-size: 10px;
-            color: #888;
+            font-size: 9px;
+            color: #999;
             margin-top: 8px;
             white-space: nowrap;
         }
@@ -172,14 +257,14 @@
         }
         
         .detail-header h3 {
-            font-size: 1.4em;
+            font-size: 1.3em;
             margin-bottom: 12px;
         }
         
         .detail-meta {
             display: flex;
             gap: 25px;
-            font-size: 0.95em;
+            font-size: 0.9em;
             opacity: 0.95;
         }
         
@@ -193,15 +278,15 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border: none;
             background: rgba(255,255,255,0.2);
             color: white;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 18px;
-            line-height: 28px;
+            font-size: 16px;
+            line-height: 26px;
             text-align: center;
             transition: background 0.2s;
         }
@@ -211,11 +296,11 @@
         }
         
         .detail-body {
-            padding: 25px;
+            padding: 20px 25px;
         }
         
         .detail-section {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         
         .detail-section:last-child {
@@ -223,7 +308,7 @@
         }
         
         .detail-section h4 {
-            font-size: 0.8em;
+            font-size: 0.75em;
             color: #999;
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -233,14 +318,14 @@
         .detail-section p {
             line-height: 1.8;
             color: #444;
-            font-size: 0.95em;
+            font-size: 0.9em;
         }
         
         .significance-box {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-            padding: 15px 18px;
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+            padding: 14px 16px;
             border-radius: 8px;
-            border-left: 4px solid #ffc107;
+            border-left: 3px solid #ffc107;
         }
         
         .significance-box p {
@@ -252,24 +337,14 @@
             padding: 25px; 
             color: #999; 
             font-size: 0.8em;
-            background: white;
-            margin-top: 30px;
         }
         
-        /* 滚动提示 */
-        .scroll-hint {
-            text-align: center;
-            padding: 10px;
-            color: #999;
-            font-size: 0.8em;
-            background: white;
-            border-top: 1px solid #eee;
-        }
-        
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.2em; }
+        @media (max-width: 700px) {
+            .intro-section {
+                grid-template-columns: 1fr;
+            }
+            header h1 { font-size: 1.3em; }
             .detail-meta { flex-direction: column; gap: 8px; }
-            .timeline-container { padding: 50px 20px 30px; }
         }
     </style>
 </head>
@@ -280,28 +355,66 @@
     <p>点击会议节点查看详细信息</p>
 </header>
 
-<div class="legend">
-    <div class="legend-item">
-        <div class="legend-dot congress"></div>
-        <span>党代会</span>
+<!-- 图例介绍 -->
+<div class="intro-section">
+    <div class="intro-card">
+        <div class="intro-header congress">
+            <div class="intro-dot"></div>
+            <h3>党的全国代表大会（党代会）</h3>
+        </div>
+        <div class="intro-body">
+            <div class="naming congress">
+                <strong>全称：</strong>中国共产党第X次全国代表大会<br>
+                <strong>简称：</strong><span class="label congress">X大</span>如"二十大"
+            </div>
+            <div>
+                <strong>召开周期：</strong>每五年一次，由中央委员会召集<br>
+                <strong>地位：</strong>党的最高领导机关<br>
+                <strong>主要职责：</strong>
+                <ul>
+                    <li>修改党章</li>
+                    <li>听取和审查中央委员会报告</li>
+                    <li>选举新一届中央委员会和中央纪律检查委员会</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="legend-item">
-        <div class="legend-dot plenary"></div>
-        <span>中央全会</span>
-    </div>
-</div>
-
-<div class="timeline-wrapper">
-    <div class="timeline-container">
-        <div class="timeline-line"></div>
-        <div class="timeline-items" id="timeline-items">
-            <!-- 动态生成 -->
+    
+    <div class="intro-card">
+        <div class="intro-header plenary">
+            <div class="intro-dot"></div>
+            <h3>中央委员会全体会议（全会）</h3>
+        </div>
+        <div class="intro-body">
+            <div class="naming plenary">
+                <strong>全称：</strong>中国共产党第X届中央委员会第Y次全体会议<br>
+                <strong>简称：</strong><span class="label plenary">X届Y中全会</span>如"二十届三中全会"
+            </div>
+            <div>
+                <strong>召开周期：</strong>每届通常召开七次（一中全会到七中全会）<br>
+                <strong>说明：</strong>党代会选出新一届中央委员会后，该届中央委员会在其五年任期内召开的全体会议
+            </div>
         </div>
     </div>
 </div>
 
-<div class="scroll-hint">← 左右滑动查看更多 →</div>
+<!-- 时间轴 -->
+<div class="timeline-section">
+    <div class="timeline-title">
+        <strong>📅 会议时间轴（1921-2024）</strong>
+        <span>← 左右滑动查看 →</span>
+    </div>
+    <div class="timeline-wrapper">
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline-items" id="timeline-items">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- 详情面板 -->
 <div id="details">
     <div class="detail-card">
         <div class="detail-header" id="detail-header">
