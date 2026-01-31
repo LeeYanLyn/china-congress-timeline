@@ -5,151 +5,327 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>中国共产党重要会议时间图谱</title>
     <style>
+        :root {
+            --red: #c62828;
+            --red-light: #ffebee;
+            --blue: #1565c0;
+            --blue-light: #e3f2fd;
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --text: #333;
+            --text-light: #666;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --radius: 12px;
+        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body { 
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; 
-            background: #f0f2f5;
-            color: #333;
-            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
         }
         
-        header { 
-            background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
-            color: white; 
-            padding: 20px; 
-            text-align: center; 
-        }
-        header h1 { font-size: 1.5em; margin-bottom: 6px; }
-        header p { opacity: 0.9; font-size: 0.85em; }
-        
-        /* 图例栏 */
-        .legend-bar {
-            background: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
+        /* ========== 标题区 ========== */
+        .header {
+            background: linear-gradient(135deg, var(--red) 0%, #8e0000 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 20px;
-            transition: background 0.2s;
-            font-size: 0.9em;
-        }
-        
-        .legend-item:hover { background: #f5f5f5; }
-        
-        .legend-item .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .legend-item.congress .dot { background: #c62828; }
-        .legend-item.plenary .dot { background: #1565c0; }
-        
-        .legend-item .arrow {
-            font-size: 0.7em;
-            transition: transform 0.3s;
-            color: #999;
-        }
-        
-        .legend-item.expanded .arrow { transform: rotate(180deg); }
-        
-        /* 折叠介绍面板 */
-        .intro-panel {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            background: #fafafa;
-        }
-        
-        .intro-panel.show { max-height: 350px; }
-        
-        .intro-content {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            font-size: 0.9em;
-            line-height: 1.8;
-            color: #555;
-            text-align: left;
-        }
-        
-        .intro-row {
-            margin-bottom: 10px;
-        }
-        
-        .intro-row .label {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            margin-right: 8px;
+        .header h1 {
+            font-size: 1.6em;
+            margin-bottom: 8px;
             font-weight: 600;
         }
         
-        .intro-content.congress .label { background: #ffebee; color: #c62828; }
-        .intro-content.plenary .label { background: #e3f2fd; color: #1565c0; }
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
         
-        .intro-content ul {
-            padding-left: 24px;
+        /* ========== 主容器 ========== */
+        .main-container {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            min-height: calc(100vh - 100px);
+        }
+        
+        /* ========== 年份导航（左侧固定） ========== */
+        .year-nav {
+            background: var(--card);
+            border-right: 1px solid #eee;
+            padding: 15px 0;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        
+        .year-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .year-nav::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 2px;
+        }
+        
+        .year-item {
+            padding: 8px 12px;
+            font-size: 0.8em;
+            color: var(--text-light);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .year-item:hover {
+            background: var(--bg);
+            color: var(--red);
+        }
+        
+        .year-item.active {
+            background: var(--red-light);
+            color: var(--red);
+            border-left-color: var(--red);
+            font-weight: 600;
+        }
+        
+        /* ========== 内容区 ========== */
+        .content-area {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* ========== 控件区 ========== */
+        .controls {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-label {
+            font-size: 0.85em;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        /* 筛选按钮 */
+        .filter-btns {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+        
+        .filter-btn.active {
+            background: var(--red);
+            border-color: var(--red);
+            color: white;
+        }
+        
+        .filter-btn.congress.active {
+            background: var(--red);
+            border-color: var(--red);
+        }
+        
+        .filter-btn.plenary.active {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+        
+        .filter-btn .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .filter-btn.congress .dot { background: var(--red); }
+        .filter-btn.plenary .dot { background: var(--blue); }
+        .filter-btn.active .dot { background: white; }
+        
+        /* 搜索框 */
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--red);
+        }
+        
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9em;
+        }
+        
+        /* 图例说明 */
+        .legend-toggle {
+            margin-left: auto;
+            padding: 8px 16px;
+            background: var(--bg);
+            border: none;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        
+        .legend-toggle:hover {
+            background: #e8e8e8;
+        }
+        
+        /* ========== 图例面板 ========== */
+        .legend-panel {
+            display: none;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .legend-panel.show {
+            display: grid;
+        }
+        
+        .legend-card {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            line-height: 1.8;
+        }
+        
+        .legend-card.congress {
+            background: var(--red-light);
+            border-left: 4px solid var(--red);
+        }
+        
+        .legend-card.plenary {
+            background: var(--blue-light);
+            border-left: 4px solid var(--blue);
+        }
+        
+        .legend-card h4 {
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        
+        .legend-card.congress h4 { color: var(--red); }
+        .legend-card.plenary h4 { color: var(--blue); }
+        
+        .legend-card ul {
+            padding-left: 18px;
             margin-top: 8px;
         }
         
-        .intro-content li { margin-bottom: 4px; }
-        
-        /* 时间轴区域 */
+        /* ========== 时间轴区域 ========== */
         .timeline-section {
-            background: white;
-            margin: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
         
         .timeline-header {
-            padding: 12px 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85em;
         }
         
-        .timeline-header strong { color: #333; }
-        .timeline-header span { color: #999; font-size: 0.9em; }
+        .timeline-header h2 {
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        .timeline-header .hint {
+            color: var(--text-light);
+            font-size: 0.8em;
+        }
         
         .timeline-scroll {
             overflow-x: auto;
-            overflow-y: hidden;
-            padding: 20px 0;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
         }
         
         .timeline-track {
             display: inline-flex;
-            align-items: center;
-            padding: 40px 30px;
-            min-width: 100%;
             position: relative;
+            padding: 50px 20px;
+            min-width: 100%;
         }
         
         .timeline-track::before {
             content: '';
             position: absolute;
-            left: 30px;
-            right: 30px;
+            left: 20px;
+            right: 20px;
             top: 50%;
-            height: 3px;
-            background: #e0e0e0;
+            height: 4px;
+            background: linear-gradient(90deg, #e0e0e0, #ccc, #e0e0e0);
+            border-radius: 2px;
             transform: translateY(-50%);
         }
         
@@ -158,118 +334,179 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
             flex-shrink: 0;
-            width: 55px;
+            width: 60px;
+            cursor: pointer;
             position: relative;
             z-index: 1;
+            transition: transform 0.2s;
         }
         
-        .node:hover { transform: scale(1.1); }
+        .node:hover {
+            transform: scale(1.1);
+        }
+        
+        .node:hover .node-preview {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
         
         .node.active .node-dot {
-            transform: scale(1.5);
-            box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+            transform: scale(1.6);
+            box-shadow: 0 0 0 6px rgba(0,0,0,0.1);
+        }
+        
+        .node.hidden {
+            display: none;
         }
         
         .node-label {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            padding: 3px 6px;
+            border-radius: 4px;
             white-space: nowrap;
-            padding: 2px 4px;
-            border-radius: 3px;
-            text-align: center;
         }
         
-        .node.congress .node-label { color: #c62828; background: #fff5f5; }
-        .node.plenary .node-label { color: #1565c0; background: #f0f7ff; }
+        .node.congress .node-label {
+            color: var(--red);
+            background: var(--red-light);
+        }
+        
+        .node.plenary .node-label {
+            color: var(--blue);
+            background: var(--blue-light);
+        }
         
         .node-dot {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: all 0.2s;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
         
-        .node.congress .node-dot { background: #c62828; }
-        .node.plenary .node-dot { background: #1565c0; }
+        .node.congress .node-dot { background: var(--red); }
+        .node.plenary .node-dot { background: var(--blue); }
         
         .node-time {
-            font-size: 9px;
-            color: #999;
-            margin-top: 8px;
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+        
+        /* 悬停预览 */
+        .node-preview {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #333;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.8em;
             white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         
-        /* 详情面板 - 铺满网页 */
-        #details { 
+        .node-preview::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #333;
+        }
+        
+        /* ========== 详情面板 ========== */
+        .detail-section {
             display: none;
-            background: white;
-            margin: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-            overflow: hidden;
-            animation: fadeIn 0.3s ease;
+            animation: slideUp 0.3s ease;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .detail-section.show {
+            display: block;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .detail-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
         }
         
         .detail-header {
-            padding: 25px;
+            padding: 30px;
             color: white;
             text-align: center;
             position: relative;
         }
         
-        .detail-header.congress { background: linear-gradient(135deg, #c62828, #b71c1c); }
-        .detail-header.plenary { background: linear-gradient(135deg, #1565c0, #0d47a1); }
+        .detail-header.congress {
+            background: linear-gradient(135deg, var(--red), #b71c1c);
+        }
+        
+        .detail-header.plenary {
+            background: linear-gradient(135deg, var(--blue), #0d47a1);
+        }
         
         .detail-header h3 {
-            font-size: 1.5em;
-            margin-bottom: 12px;
+            font-size: 1.6em;
+            margin-bottom: 15px;
         }
         
         .detail-meta {
             display: flex;
             justify-content: center;
             gap: 30px;
-            font-size: 0.95em;
+            font-size: 1em;
             opacity: 0.95;
         }
         
         .close-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 30px;
-            height: 30px;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
             border: none;
             background: rgba(255,255,255,0.2);
             color: white;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 18px;
-            line-height: 28px;
+            font-size: 20px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .close-btn:hover { background: rgba(255,255,255,0.3); }
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
         
-        /* 详情内容 - 两列布局 */
         .detail-body {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0;
         }
         
         .detail-column {
-            padding: 25px 30px;
+            padding: 30px;
         }
         
         .detail-column:first-child {
@@ -277,19 +514,18 @@
         }
         
         .detail-column h4 {
-            font-size: 0.85em;
-            color: #999;
+            font-size: 0.9em;
+            color: var(--text-light);
             margin-bottom: 15px;
-            letter-spacing: 1px;
             text-align: center;
+            letter-spacing: 2px;
         }
         
         .detail-column p {
             line-height: 2;
-            color: #444;
             font-size: 0.95em;
-            text-align: left;
             text-indent: 2em;
+            text-align: left;
         }
         
         .detail-column.significance {
@@ -300,240 +536,315 @@
             color: #5d4037;
         }
         
-        footer { 
-            text-align: center; 
-            padding: 20px; 
-            color: #999; 
+        /* ========== 页脚 ========== */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-light);
             font-size: 0.8em;
         }
         
-        @media (max-width: 700px) {
-            header h1 { font-size: 1.2em; }
-            .legend-bar { gap: 15px; }
-            .detail-meta { flex-direction: column; gap: 8px; }
-            .detail-body { grid-template-columns: 1fr; }
-            .detail-column:first-child { border-right: none; border-bottom: 1px solid #eee; }
-            .node { width: 50px; }
+        /* ========== 无结果提示 ========== */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            display: none;
+        }
+        
+        .no-results.show {
+            display: block;
+        }
+        
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .year-nav {
+                display: none;
+            }
+            
+            .legend-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-column:first-child {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.3em;
+            }
+            
+            .controls {
+                padding: 15px;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+            
+            .filter-btns {
+                width: 100%;
+            }
+            
+            .filter-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .search-box {
+                max-width: none;
+            }
+            
+            .legend-toggle {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            .detail-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .node {
+                width: 50px;
+            }
         }
     </style>
 </head>
 <body>
 
-<header>
+<!-- 标题区 -->
+<header class="header">
     <h1>中国共产党重要会议时间图谱</h1>
-    <p>点击节点查看会议详情</p>
+    <p>探索百年党史 · 点击节点查看详情</p>
 </header>
 
-<!-- 图例栏 -->
-<div class="legend-bar">
-    <div class="legend-item congress" id="legend-congress">
-        <span class="dot"></span>
-        <span>党代会</span>
-        <span class="arrow">▼</span>
-    </div>
-    <div class="legend-item plenary" id="legend-plenary">
-        <span class="dot"></span>
-        <span>中央全会</span>
-        <span class="arrow">▼</span>
+<div class="main-container">
+    <!-- 年份导航 -->
+    <nav class="year-nav" id="year-nav"></nav>
+    
+    <!-- 内容区 -->
+    <div class="content-area">
+        
+        <!-- 控件区 -->
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">筛选：</span>
+                <div class="filter-btns">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn congress" data-filter="congress">
+                        <span class="dot"></span>党代会
+                    </button>
+                    <button class="filter-btn plenary" data-filter="plenary">
+                        <span class="dot"></span>全会
+                    </button>
+                </div>
+            </div>
+            
+            <div class="control-group search-box">
+                <input type="text" id="search-input" placeholder="搜索会议名称、年份...">
+            </div>
+            
+            <button class="legend-toggle" id="legend-toggle">📖 会议说明</button>
+        </div>
+        
+        <!-- 图例面板 -->
+        <div class="legend-panel" id="legend-panel">
+            <div class="legend-card congress">
+                <h4>党代会（X大）</h4>
+                <div><strong>全称：</strong>中国共产党第X次全国代表大会</div>
+                <div><strong>周期：</strong>每五年一次</div>
+                <div><strong>职责：</strong>
+                    <ul>
+                        <li>修改党章</li>
+                        <li>审查中央委员会报告</li>
+                        <li>选举新一届中央委员会</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="legend-card plenary">
+                <h4>全会（X届Y中全会）</h4>
+                <div><strong>全称：</strong>中国共产党第X届中央委员会第Y次全体会议</div>
+                <div><strong>周期：</strong>每届通常召开七次</div>
+                <div><strong>说明：</strong>党代会选出新一届中央委员会后，在其五年任期内召开的全体会议</div>
+            </div>
+        </div>
+        
+        <!-- 时间轴 -->
+        <div class="timeline-section">
+            <div class="timeline-header">
+                <h2>📅 会议时间轴</h2>
+                <span class="hint">← 左右滑动查看 →</span>
+            </div>
+            <div class="timeline-scroll" id="timeline-scroll">
+                <div class="timeline-track" id="timeline-track"></div>
+            </div>
+            <div class="no-results" id="no-results">
+                😔 没有找到匹配的会议，请尝试其他关键词
+            </div>
+        </div>
+        
+        <!-- 详情面板 -->
+        <div class="detail-section" id="detail-section">
+            <div class="detail-card">
+                <div class="detail-header" id="detail-header">
+                    <button class="close-btn" id="close-btn">×</button>
+                    <h3 id="conf-title">会议名称</h3>
+                    <div class="detail-meta">
+                        <span>📅 <span id="conf-time"></span></span>
+                        <span>📍 <span id="conf-place"></span></span>
+                    </div>
+                </div>
+                <div class="detail-body">
+                    <div class="detail-column">
+                        <h4>会 议 内 容</h4>
+                        <p id="conf-desc"></p>
+                    </div>
+                    <div class="detail-column significance">
+                        <h4>历 史 意 义</h4>
+                        <p id="conf-significance"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <footer class="footer">
+            数据来源：公开党史资料 · 仅供学习参考
+        </footer>
     </div>
 </div>
-
-<!-- 党代会介绍 -->
-<div class="intro-panel" id="panel-congress">
-    <div class="intro-content congress">
-        <div class="intro-row">
-            <span class="label">简称</span>X大（如"二十大"）
-        </div>
-        <div class="intro-row">
-            <span class="label">全称</span>中国共产党第X次全国代表大会
-        </div>
-        <div class="intro-row">
-            <strong>召开周期：</strong>每五年一次，由中央委员会召集
-        </div>
-        <div class="intro-row">
-            <strong>地位：</strong>党的最高领导机关
-        </div>
-        <div class="intro-row">
-            <strong>主要职责：</strong>
-            <ul>
-                <li>修改党章</li>
-                <li>听取和审查中央委员会报告</li>
-                <li>选举新一届中央委员会和中央纪律检查委员会</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- 全会介绍 -->
-<div class="intro-panel" id="panel-plenary">
-    <div class="intro-content plenary">
-        <div class="intro-row">
-            <span class="label">简称</span>X届Y中全会（如"二十届三中全会"）
-        </div>
-        <div class="intro-row">
-            <span class="label">全称</span>中国共产党第X届中央委员会第Y次全体会议
-        </div>
-        <div class="intro-row">
-            <strong>召开周期：</strong>每届通常召开七次（一中全会到七中全会）
-        </div>
-        <div class="intro-row">
-            <strong>说明：</strong>党代会选出新一届中央委员会后，该届中央委员会在其五年任期内召开的全体会议
-        </div>
-    </div>
-</div>
-
-<!-- 时间轴 -->
-<div class="timeline-section">
-    <div class="timeline-header">
-        <strong>📅 会议时间轴 (1921-2024)</strong>
-        <span>← 滑动查看 →</span>
-    </div>
-    <div class="timeline-scroll">
-        <div class="timeline-track" id="timeline-track"></div>
-    </div>
-</div>
-
-<!-- 详情面板 -->
-<div id="details">
-    <div class="detail-header" id="detail-header">
-        <button class="close-btn" id="close-btn">×</button>
-        <h3 id="conf-title">会议名称</h3>
-        <div class="detail-meta">
-            <span>📅 <span id="conf-time"></span></span>
-            <span>📍 <span id="conf-place"></span></span>
-        </div>
-    </div>
-    <div class="detail-body">
-        <div class="detail-column">
-            <h4>会议内容</h4>
-            <p id="conf-desc"></p>
-        </div>
-        <div class="detail-column significance">
-            <h4>历史意义</h4>
-            <p id="conf-significance"></p>
-        </div>
-    </div>
-</div>
-
-<footer>
-    数据来源：公开党史资料 · 仅供学习参考
-</footer>
 
 <script>
-    // 会议数据
+    // ==================== 数据 ====================
     const data = [
-        { id: 1, name: '一大', full: '中共一大', time: '1921-07', place: '上海→嘉兴', type: 'congress',
+        { id: 1, name: '一大', full: '中共一大', time: '1921-07', year: 1921, place: '上海→嘉兴', type: 'congress',
           desc: '中国共产党第一次全国代表大会，宣告中国共产党正式成立。大会确定党的名称为"中国共产党"，通过了党的第一个纲领。',
           significance: '标志着中国共产党的诞生，中国革命面貌从此焕然一新。' },
-        { id: 2, name: '二大', full: '中共二大', time: '1922-07', place: '上海', type: 'congress',
+        { id: 2, name: '二大', full: '中共二大', time: '1922-07', year: 1922, place: '上海', type: 'congress',
           desc: '第一次提出反帝反封建的民主革命纲领，制定了党的第一部章程。',
           significance: '第一次明确提出党的最高纲领和最低纲领。' },
-        { id: 3, name: '三大', full: '中共三大', time: '1923-06', place: '广州', type: 'congress',
+        { id: 3, name: '三大', full: '中共三大', time: '1923-06', year: 1923, place: '广州', type: 'congress',
           desc: '决定共产党员以个人身份加入国民党，实现国共合作。',
           significance: '确立国共合作方针，推动第一次国共合作实现。' },
-        { id: 4, name: '四大', full: '中共四大', time: '1925-01', place: '上海', type: 'congress',
+        { id: 4, name: '四大', full: '中共四大', time: '1925-01', year: 1925, place: '上海', type: 'congress',
           desc: '第一次明确提出无产阶级在民主革命中的领导权和工农联盟问题。',
           significance: '提出无产阶级领导权和工农联盟的重要思想。' },
-        { id: 5, name: '五大', full: '中共五大', time: '1927-04', place: '武汉', type: 'congress',
+        { id: 5, name: '五大', full: '中共五大', time: '1927-04', year: 1927, place: '武汉', type: 'congress',
           desc: '在大革命紧急关头召开，批评了陈独秀的右倾错误。',
           significance: '第一次选举产生中央监察委员会。' },
-        { id: 6, name: '六大', full: '中共六大', time: '1928-06', place: '莫斯科', type: 'congress',
+        { id: 6, name: '六大', full: '中共六大', time: '1928-06', year: 1928, place: '莫斯科', type: 'congress',
           desc: '唯一一次在国外召开的党代会，总结大革命失败的教训。',
           significance: '明确中国革命的性质和任务。' },
-        { id: 7, name: '七大', full: '中共七大', time: '1945-04', place: '延安', type: 'congress',
+        { id: 7, name: '七大', full: '中共七大', time: '1945-04', year: 1945, place: '延安', type: 'congress',
           desc: '确立毛泽东思想为党的指导思想，总结党的历史经验。',
           significance: '实现全党空前团结统一，为抗战和解放战争胜利奠定基础。' },
-        { id: 101, name: '七届二中', full: '七届二中全会', time: '1949-03', place: '西柏坡', type: 'plenary',
+        { id: 101, name: '七届二中', full: '七届二中全会', time: '1949-03', year: 1949, place: '西柏坡', type: 'plenary',
           desc: '提出党的工作重心由乡村转移到城市的战略方针，提出"两个务必"思想。',
           significance: '为新中国建立作了政治、思想上的准备。' },
-        { id: 8, name: '八大', full: '中共八大', time: '1956-09', place: '北京', type: 'congress',
+        { id: 8, name: '八大', full: '中共八大', time: '1956-09', year: 1956, place: '北京', type: 'congress',
           desc: '正确分析国内主要矛盾变化，提出社会主义建设任务。',
           significance: '是探索社会主义建设道路的良好开端。' },
-        { id: 9, name: '九大', full: '中共九大', time: '1969-04', place: '北京', type: 'congress',
+        { id: 9, name: '九大', full: '中共九大', time: '1969-04', year: 1969, place: '北京', type: 'congress',
           desc: '在文化大革命中召开，使"文化大革命"的错误理论和实践合法化。',
           significance: '这是党的历史上的一次失误。' },
-        { id: 10, name: '十大', full: '中共十大', time: '1973-08', place: '北京', type: 'congress',
+        { id: 10, name: '十大', full: '中共十大', time: '1973-08', year: 1973, place: '北京', type: 'congress',
           desc: '继续九大的"左"倾错误。',
           significance: '未能纠正"文化大革命"的错误。' },
-        { id: 11, name: '十一大', full: '中共十一大', time: '1977-08', place: '北京', type: 'congress',
+        { id: 11, name: '十一大', full: '中共十一大', time: '1977-08', year: 1977, place: '北京', type: 'congress',
           desc: '宣告"文化大革命"结束，但仍肯定其错误理论。',
           significance: '标志着"文化大革命"结束后党的工作开始转折。' },
-        { id: 102, name: '十一届三中', full: '十一届三中全会', time: '1978-12', place: '北京', type: 'plenary',
+        { id: 102, name: '十一届三中', full: '十一届三中全会', time: '1978-12', year: 1978, place: '北京', type: 'plenary',
           desc: '重新确立解放思想、实事求是的思想路线，作出把工作中心转移到经济建设上来、实行改革开放的历史性决策。',
           significance: '开启改革开放和社会主义现代化建设伟大征程，实现伟大历史转折。' },
-        { id: 103, name: '十一届六中', full: '十一届六中全会', time: '1981-06', place: '北京', type: 'plenary',
+        { id: 103, name: '十一届六中', full: '十一届六中全会', time: '1981-06', year: 1981, place: '北京', type: 'plenary',
           desc: '通过《关于建国以来党的若干历史问题的决议》，实事求是评价毛泽东历史地位。',
           significance: '标志着党在指导思想上拨乱反正胜利完成。' },
-        { id: 12, name: '十二大', full: '中共十二大', time: '1982-09', place: '北京', type: 'congress',
+        { id: 12, name: '十二大', full: '中共十二大', time: '1982-09', year: 1982, place: '北京', type: 'congress',
           desc: '提出"建设有中国特色的社会主义"重大命题。',
           significance: '开创社会主义现代化建设新局面。' },
-        { id: 104, name: '十二届三中', full: '十二届三中全会', time: '1984-10', place: '北京', type: 'plenary',
+        { id: 104, name: '十二届三中', full: '十二届三中全会', time: '1984-10', year: 1984, place: '北京', type: 'plenary',
           desc: '通过《关于经济体制改革的决定》，突破计划经济与商品经济对立的传统观念。',
           significance: '标志着以城市为重点的经济体制改革全面展开。' },
-        { id: 13, name: '十三大', full: '中共十三大', time: '1987-10', place: '北京', type: 'congress',
+        { id: 13, name: '十三大', full: '中共十三大', time: '1987-10', year: 1987, place: '北京', type: 'congress',
           desc: '系统阐述社会主义初级阶段理论，提出"一个中心、两个基本点"基本路线。',
           significance: '确立社会主义初级阶段理论体系。' },
-        { id: 14, name: '十四大', full: '中共十四大', time: '1992-10', place: '北京', type: 'congress',
+        { id: 14, name: '十四大', full: '中共十四大', time: '1992-10', year: 1992, place: '北京', type: 'congress',
           desc: '确立社会主义市场经济体制改革目标，确立邓小平理论指导地位。',
           significance: '标志着改革开放和现代化建设进入新阶段。' },
-        { id: 105, name: '十四届三中', full: '十四届三中全会', time: '1993-11', place: '北京', type: 'plenary',
+        { id: 105, name: '十四届三中', full: '十四届三中全会', time: '1993-11', year: 1993, place: '北京', type: 'plenary',
           desc: '通过《关于建立社会主义市场经济体制若干问题的决定》。',
           significance: '勾画社会主义市场经济体制基本框架。' },
-        { id: 15, name: '十五大', full: '中共十五大', time: '1997-09', place: '北京', type: 'congress',
+        { id: 15, name: '十五大', full: '中共十五大', time: '1997-09', year: 1997, place: '北京', type: 'congress',
           desc: '把邓小平理论确立为党的指导思想，提出党在社会主义初级阶段的基本纲领。',
           significance: '高举邓小平理论伟大旗帜，推进改革开放。' },
-        { id: 106, name: '十五届三中', full: '十五届三中全会', time: '1998-10', place: '北京', type: 'plenary',
+        { id: 106, name: '十五届三中', full: '十五届三中全会', time: '1998-10', year: 1998, place: '北京', type: 'plenary',
           desc: '通过《关于农业和农村工作若干重大问题的决定》。',
           significance: '推进农村改革发展的重要会议。' },
-        { id: 16, name: '十六大', full: '中共十六大', time: '2002-11', place: '北京', type: 'congress',
+        { id: 16, name: '十六大', full: '中共十六大', time: '2002-11', year: 2002, place: '北京', type: 'congress',
           desc: '把"三个代表"重要思想确立为党的指导思想，提出全面建设小康社会奋斗目标。',
           significance: '实现党的领导集体新老交替。' },
-        { id: 107, name: '十六届三中', full: '十六届三中全会', time: '2003-10', place: '北京', type: 'plenary',
+        { id: 107, name: '十六届三中', full: '十六届三中全会', time: '2003-10', year: 2003, place: '北京', type: 'plenary',
           desc: '通过《关于完善社会主义市场经济体制若干问题的决定》。',
           significance: '推动完善社会主义市场经济体制。' },
-        { id: 108, name: '十六届四中', full: '十六届四中全会', time: '2004-09', place: '北京', type: 'plenary',
+        { id: 108, name: '十六届四中', full: '十六届四中全会', time: '2004-09', year: 2004, place: '北京', type: 'plenary',
           desc: '通过《关于加强党的执政能力建设的决定》。',
           significance: '首次把执政能力建设作为中央全会主题。' },
-        { id: 17, name: '十七大', full: '中共十七大', time: '2007-10', place: '北京', type: 'congress',
+        { id: 17, name: '十七大', full: '中共十七大', time: '2007-10', year: 2007, place: '北京', type: 'congress',
           desc: '对科学发展观作出科学界定，提出实现全面建设小康社会奋斗目标的新要求。',
           significance: '深入贯彻落实科学发展观。' },
-        { id: 109, name: '十七届三中', full: '十七届三中全会', time: '2008-10', place: '北京', type: 'plenary',
+        { id: 109, name: '十七届三中', full: '十七届三中全会', time: '2008-10', year: 2008, place: '北京', type: 'plenary',
           desc: '通过《关于推进农村改革发展若干重大问题的决定》。',
           significance: '推进新形势下农村改革发展。' },
-        { id: 18, name: '十八大', full: '中共十八大', time: '2012-11', place: '北京', type: 'congress',
+        { id: 18, name: '十八大', full: '中共十八大', time: '2012-11', year: 2012, place: '北京', type: 'congress',
           desc: '确定全面建成小康社会和全面深化改革开放目标，确立科学发展观历史地位。',
           significance: '中国特色社会主义进入新时代的起点。' },
-        { id: 110, name: '十八届三中', full: '十八届三中全会', time: '2013-11', place: '北京', type: 'plenary',
+        { id: 110, name: '十八届三中', full: '十八届三中全会', time: '2013-11', year: 2013, place: '北京', type: 'plenary',
           desc: '通过《关于全面深化改革若干重大问题的决定》，提出市场在资源配置中起决定性作用。',
           significance: '吹响全面深化改革的号角。' },
-        { id: 111, name: '十八届四中', full: '十八届四中全会', time: '2014-10', place: '北京', type: 'plenary',
+        { id: 111, name: '十八届四中', full: '十八届四中全会', time: '2014-10', year: 2014, place: '北京', type: 'plenary',
           desc: '通过《关于全面推进依法治国若干重大问题的决定》。',
           significance: '首次以中央全会专题研究全面推进依法治国。' },
-        { id: 112, name: '十八届五中', full: '十八届五中全会', time: '2015-10', place: '北京', type: 'plenary',
+        { id: 112, name: '十八届五中', full: '十八届五中全会', time: '2015-10', year: 2015, place: '北京', type: 'plenary',
           desc: '审议通过"十三五"规划建议，提出创新、协调、绿色、开放、共享新发展理念。',
           significance: '确立新发展理念。' },
-        { id: 113, name: '十八届六中', full: '十八届六中全会', time: '2016-10', place: '北京', type: 'plenary',
+        { id: 113, name: '十八届六中', full: '十八届六中全会', time: '2016-10', year: 2016, place: '北京', type: 'plenary',
           desc: '正式提出"以习近平同志为核心的党中央"，审议通过党内政治生活准则。',
           significance: '全面从严治党向纵深推进。' },
-        { id: 19, name: '十九大', full: '中共十九大', time: '2017-10', place: '北京', type: 'congress',
+        { id: 19, name: '十九大', full: '中共十九大', time: '2017-10', year: 2017, place: '北京', type: 'congress',
           desc: '把习近平新时代中国特色社会主义思想确立为党的指导思想。',
           significance: '宣告中国特色社会主义进入新时代。' },
-        { id: 114, name: '十九届三中', full: '十九届三中全会', time: '2018-02', place: '北京', type: 'plenary',
+        { id: 114, name: '十九届三中', full: '十九届三中全会', time: '2018-02', year: 2018, place: '北京', type: 'plenary',
           desc: '审议通过《关于深化党和国家机构改革的决定》和改革方案。',
           significance: '推进国家治理体系和治理能力现代化的重大决策。' },
-        { id: 115, name: '十九届四中', full: '十九届四中全会', time: '2019-10', place: '北京', type: 'plenary',
+        { id: 115, name: '十九届四中', full: '十九届四中全会', time: '2019-10', year: 2019, place: '北京', type: 'plenary',
           desc: '审议通过《关于坚持和完善中国特色社会主义制度、推进国家治理体系和治理能力现代化若干重大问题的决定》。',
           significance: '系统总结中国国家制度和国家治理体系显著优势。' },
-        { id: 116, name: '十九届五中', full: '十九届五中全会', time: '2020-10', place: '北京', type: 'plenary',
+        { id: 116, name: '十九届五中', full: '十九届五中全会', time: '2020-10', year: 2020, place: '北京', type: 'plenary',
           desc: '审议通过"十四五"规划和2035年远景目标建议。',
           significance: '擘画中国未来发展蓝图。' },
-        { id: 117, name: '十九届六中', full: '十九届六中全会', time: '2021-11', place: '北京', type: 'plenary',
+        { id: 117, name: '十九届六中', full: '十九届六中全会', time: '2021-11', year: 2021, place: '北京', type: 'plenary',
           desc: '审议通过《关于党的百年奋斗重大成就和历史经验的决议》。',
           significance: '党的第三个历史决议，总结百年奋斗重大成就和历史经验。' },
-        { id: 20, name: '二十大', full: '中共二十大', time: '2022-10', place: '北京', type: 'congress',
+        { id: 20, name: '二十大', full: '中共二十大', time: '2022-10', year: 2022, place: '北京', type: 'congress',
           desc: '全面总结新时代十年伟大变革，对全面建设社会主义现代化国家作出战略部署。',
           significance: '全面建设社会主义现代化国家新征程上的关键会议。' },
-        { id: 118, name: '二十届三中', full: '二十届三中全会', time: '2024-07', place: '北京', type: 'plenary',
+        { id: 118, name: '二十届三中', full: '二十届三中全会', time: '2024-07', year: 2024, place: '北京', type: 'plenary',
           desc: '审议通过《关于进一步全面深化改革、推进中国式现代化的决定》。',
           significance: '对进一步全面深化改革作出系统部署。' },
     ];
@@ -541,20 +852,38 @@
     // 排序
     data.sort((a, b) => a.time.localeCompare(b.time));
 
-    // 格式化时间
-    function formatTime(t) {
-        const [y, m] = t.split('-');
-        return `${y}年${m}月`;
-    }
-
-    // 生成时间轴
-    const track = document.getElementById('timeline-track');
+    // ==================== 状态 ====================
+    let currentFilter = 'all';
+    let currentSearch = '';
     let activeNode = null;
+    let activeYear = null;
 
+    // ==================== 初始化 ====================
+    const track = document.getElementById('timeline-track');
+    const yearNav = document.getElementById('year-nav');
+    const years = [...new Set(data.map(d => d.year))].sort();
+
+    // 生成年份导航
+    years.forEach(year => {
+        const div = document.createElement('div');
+        div.className = 'year-item';
+        div.textContent = year;
+        div.dataset.year = year;
+        div.addEventListener('click', () => scrollToYear(year));
+        yearNav.appendChild(div);
+    });
+
+    // 生成时间轴节点
     data.forEach(item => {
         const node = document.createElement('div');
         node.className = `node ${item.type}`;
+        node.dataset.id = item.id;
+        node.dataset.year = item.year;
+        node.dataset.type = item.type;
+        node.dataset.search = `${item.name} ${item.full} ${item.time} ${item.year}`.toLowerCase();
+        
         node.innerHTML = `
+            <div class="node-preview">${item.full}<br>${formatTime(item.time)}</div>
             <div class="node-label">${item.name}</div>
             <div class="node-dot"></div>
             <div class="node-time">${item.time}</div>
@@ -570,7 +899,12 @@
         track.appendChild(node);
     });
 
-    // 显示详情
+    // ==================== 功能函数 ====================
+    function formatTime(t) {
+        const [y, m] = t.split('-');
+        return `${y}年${m}月`;
+    }
+
     function showDetail(item) {
         document.getElementById('conf-title').textContent = item.full;
         document.getElementById('conf-time').textContent = formatTime(item.time);
@@ -579,36 +913,111 @@
         document.getElementById('conf-significance').textContent = item.significance;
         document.getElementById('detail-header').className = 'detail-header ' + item.type;
         
-        const details = document.getElementById('details');
-        details.style.display = 'block';
-        details.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const section = document.getElementById('detail-section');
+        section.classList.add('show');
+        section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    function filterNodes() {
+        const nodes = document.querySelectorAll('.node');
+        let visibleCount = 0;
+        
+        nodes.forEach(node => {
+            const matchType = currentFilter === 'all' || node.dataset.type === currentFilter;
+            const matchSearch = !currentSearch || node.dataset.search.includes(currentSearch.toLowerCase());
+            
+            if (matchType && matchSearch) {
+                node.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                node.classList.add('hidden');
+            }
+        });
+        
+        document.getElementById('no-results').classList.toggle('show', visibleCount === 0);
+    }
+
+    function scrollToYear(year) {
+        const node = document.querySelector(`.node[data-year="${year}"]`);
+        if (node) {
+            const scroll = document.getElementById('timeline-scroll');
+            const nodeLeft = node.offsetLeft - scroll.offsetWidth / 2 + node.offsetWidth / 2;
+            scroll.scrollTo({ left: nodeLeft, behavior: 'smooth' });
+        }
+        
+        document.querySelectorAll('.year-item').forEach(y => {
+            y.classList.toggle('active', y.dataset.year == year);
+        });
+    }
+
+    function updateActiveYear() {
+        const scroll = document.getElementById('timeline-scroll');
+        const scrollCenter = scroll.scrollLeft + scroll.offsetWidth / 2;
+        const nodes = document.querySelectorAll('.node:not(.hidden)');
+        
+        let closestNode = null;
+        let closestDist = Infinity;
+        
+        nodes.forEach(node => {
+            const dist = Math.abs(node.offsetLeft + node.offsetWidth / 2 - scrollCenter);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closestNode = node;
+            }
+        });
+        
+        if (closestNode) {
+            const year = closestNode.dataset.year;
+            document.querySelectorAll('.year-item').forEach(y => {
+                y.classList.toggle('active', y.dataset.year == year);
+            });
+        }
+    }
+
+    // ==================== 事件绑定 ====================
+    
+    // 筛选按钮
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            filterNodes();
+        });
+    });
+
+    // 搜索
+    let searchTimer;
+    document.getElementById('search-input').addEventListener('input', function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            currentSearch = this.value.trim();
+            filterNodes();
+        }, 200);
+    });
+
+    // 图例切换
+    document.getElementById('legend-toggle').addEventListener('click', function() {
+        document.getElementById('legend-panel').classList.toggle('show');
+        this.textContent = document.getElementById('legend-panel').classList.contains('show') 
+            ? '📖 收起说明' : '📖 会议说明';
+    });
 
     // 关闭详情
     document.getElementById('close-btn').addEventListener('click', () => {
-        document.getElementById('details').style.display = 'none';
+        document.getElementById('detail-section').classList.remove('show');
         if (activeNode) {
             activeNode.classList.remove('active');
             activeNode = null;
         }
     });
 
-    // 折叠介绍
-    document.getElementById('legend-congress').addEventListener('click', function() {
-        this.classList.toggle('expanded');
-        document.getElementById('panel-congress').classList.toggle('show');
-        document.getElementById('panel-plenary').classList.remove('show');
-        document.getElementById('legend-plenary').classList.remove('expanded');
-    });
+    // 滚动时更新年份高亮
+    document.getElementById('timeline-scroll').addEventListener('scroll', updateActiveYear);
 
-    document.getElementById('legend-plenary').addEventListener('click', function() {
-        this.classList.toggle('expanded');
-        document.getElementById('panel-plenary').classList.toggle('show');
-        document.getElementById('panel-congress').classList.remove('show');
-        document.getElementById('legend-congress').classList.remove('expanded');
-    });
+    // 初始化年份高亮
+    updateActiveYear();
 </script>
 
 </body>
 </html>
-
