@@ -1,44 +1,64 @@
-# China Congress Timeline
-中国重要大会时间可视化图谱
+# 🕰️ China Congress Timeline - 中国共产党重要会议时间轴
 
-一个使用原生 HTML / CSS / JavaScript 构建的中国重要会议时间轴可视化项目，支持筛选、搜索与交互式浏览，强调信息结构与状态一致性设计。
+[![GitHub Pages](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://leeyanlyn.github.io/china-congress-timeline/)
+![Platform](https://img.shields.io/badge/Platform-Web-blue.svg)
+![Tech](https://img.shields.io/badge/Tech-Vanilla%20JS-lightgrey)
 
-🔗 在线预览  
-https://leeyanlyn.github.io/china-congress-timeline/
-
----
-
-## 核心功能
-
-- 横向时间轴展示重要会议节点，支持自动居中定位
-- 会议类型筛选（全部 / 党代会 / 全会），视觉与布局联动
-- 关键词搜索，实时过滤并同步时间轴与年份导航
-- 左侧年份导航 + 中部时间轴 + 右侧详情面板三向联动
-- 清晰的空状态与可预测的交互反馈
+这是一个基于 **原生 HTML / CSS / JavaScript** 构建的中国重要会议时间轴可视化项目，旨在通过**时间轴 + 筛选 + 搜索 + 详情联动**的方式，帮助用户系统性理解党代会与重要全会的历史脉络。
 
 ---
 
-## 设计要点
+## 🌟 核心功能
 
-- 使用显式状态管理避免筛选、搜索、滚动之间的冲突
-- 数据处理、DOM 渲染与交互逻辑分离
-- 弱化装饰，突出信息层级与历史脉络
-- 不依赖任何框架，强调基础能力与可控复杂度
+- **🕰️ 交互式时间轴 (Timeline Visualization)**  
+  横向时间轴展示重要会议节点，支持自动居中定位与滚动同步。
+
+- **🗂️ 会议类型筛选 (Filter System)**  
+  支持「全部 / 党代会 / 中央委员会全会」筛选，不同类型具有独立的视觉与布局逻辑。
+
+- **🔍 关键词搜索 (Search)**  
+  支持按会议名称与关键词实时过滤，搜索结果与时间轴、年份导航保持同步。
+
+- **📅 年份快速导航 (Year Navigation)**  
+  左侧年份列表可快速跳转，对应时间轴节点自动高亮。
+
+- **📖 会议详情面板 (Detail Panel)**  
+  点击节点即可查看会议背景与核心内容，详情状态与当前筛选条件保持一致。
 
 ---
 
-## 技术栈
+## 🧠 设计理念
 
-- HTML / CSS（Flex 布局、响应式设计）
-- 原生 JavaScript（状态驱动渲染）
-- GitHub Pages 部署
+- 强调**信息结构清晰度**而非视觉炫技  
+- 使用显式状态管理避免筛选、搜索、滚动之间的冲突  
+- 时间轴、年份导航、详情面板三者基于统一状态源联动  
+- 不依赖任何前端框架，突出基础能力与可控复杂度
 
 ---
 
-## 项目结构
+## 🛠️ 技术实现
+
+- **Frontend**: 原生 HTML5、CSS3（Flex 布局、响应式设计）、JavaScript（ES6+）
+- **State Management**: 基于内存状态的驱动式渲染
+- **Deployment**: GitHub Pages
+
+---
+
+## 🚀 如何使用
+
+1. **访问地址**：点击顶部的 [Live Demo] 即可打开项目  
+2. **筛选会议**：通过顶部按钮切换不同会议类型  
+3. **搜索定位**：输入关键词快速查找相关会议  
+4. **查看详情**：点击时间轴节点或年份，查看对应会议内容  
+
+---
+
+## 📂 项目结构
 
 ```text
-index.html   # 页面结构
-style.css    # 布局与主题样式
-script.js    # 状态管理与交互逻辑
-data.js      # 会议数据
+china-congress-timeline/
+│
+├─ index.html    # 页面结构与核心容器
+├─ style.css     # 布局、主题与视觉样式
+├─ script.js     # 状态管理、渲染与交互逻辑
+└─ data.js       # 会议数据定义
