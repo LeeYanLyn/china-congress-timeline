@@ -18,12 +18,9 @@
             --radius: 12px;
             --header-height: 80px;
             --sidebar-width: 70px;
-            
-            /* 动态节点间距，由 JS 控制 body 类名修改 */
             --node-gap: 30px; 
         }
 
-        /* 密度控制：根据 body 类名调整间距 */
         body.filter-mode-all { --node-gap: 20px; }
         body.filter-mode-congress { --node-gap: 60px; }
         body.filter-mode-plenary { --node-gap: 50px; }
@@ -36,10 +33,10 @@
             color: var(--text);
             line-height: 1.6;
             height: 100vh;
-            overflow: hidden; /* 禁止整个页面滚动，各区域独立滚动 */
+            overflow: hidden;
         }
         
-        /* ========== 标题区 ========== */
+        /* 标题区 */
         .header {
             background: linear-gradient(135deg, var(--red) 0%, #8e0000 100%);
             color: white;
@@ -47,27 +44,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 20px;
             flex-direction: column;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 100;
             position: relative;
         }
-        
         .header h1 { font-size: 1.4em; font-weight: 600; }
         .header p { opacity: 0.8; font-size: 0.8em; margin-top: 4px; }
         
-        /* ========== 主布局 ========== */
+        /* 主布局 */
         .main-container {
             display: grid;
             grid-template-columns: var(--sidebar-width) 1fr;
             height: calc(100vh - var(--header-height));
-            max-width: 1600px; /* 限制最大宽度 */
+            max-width: 1600px;
             margin: 0 auto;
             position: relative;
         }
         
-        /* ========== 年份导航（左侧） ========== */
+        /* 左侧年份导航 */
         .year-nav {
             background: var(--card);
             border-right: 1px solid #eee;
@@ -76,12 +71,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px 0;
-            /* 增加底部留白，防止最后一个年份点不到 */
-            padding-bottom: 50px; 
+            padding: 10px 0 50px 0;
         }
-        
-        .year-nav::-webkit-scrollbar { width: 0; } /* 隐藏滚动条让界面更干净 */
+        .year-nav::-webkit-scrollbar { width: 0; }
         
         .year-item {
             padding: 10px 0;
@@ -93,16 +85,13 @@
             transition: all 0.2s;
             position: relative;
         }
-        
         .year-item:hover { color: var(--red); font-weight: bold; }
-        
         .year-item.active {
             color: var(--red);
             font-weight: 800;
             font-size: 14px;
             background: var(--bg);
         }
-        
         .year-item.active::before {
             content: '';
             position: absolute;
@@ -112,17 +101,16 @@
             border-radius: 0 4px 4px 0;
         }
         
-        /* ========== 内容区 ========== */
+        /* 内容区 */
         .content-area {
             display: flex;
             flex-direction: column;
             padding: 20px;
-            overflow-y: auto; /* 允许垂直内容滚动（如果控件太多） */
-            overflow-x: hidden; /* 绝对禁止横滚 */
+            overflow-x: hidden;
             position: relative;
         }
         
-        /* ========== 控件区 ========== */
+        /* 控件区 */
         .controls {
             background: var(--card);
             border-radius: var(--radius);
@@ -133,10 +121,10 @@
             gap: 15px;
             align-items: center;
             margin-bottom: 20px;
-            z-index: 10;
+            z-index: 20;
+            position: relative;
         }
         
-        /* 筛选按钮组 */
         .filter-group {
             display: flex;
             background: #f0f0f0;
@@ -153,11 +141,7 @@
             cursor: pointer;
             transition: all 0.2s;
             color: #666;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
-        
         .filter-btn.active { background: white; color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-weight: 600; }
         .filter-btn[data-filter="congress"].active { color: var(--red); }
         .filter-btn[data-filter="plenary"].active { color: var(--blue); }
@@ -167,19 +151,51 @@
             position: relative;
             min-width: 200px;
         }
-        
         .search-box input {
             width: 100%;
             padding: 8px 15px 8px 35px;
             border: 1px solid #ddd;
             border-radius: 20px;
             font-size: 0.9em;
-            transition: all 0.2s;
         }
         .search-box input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); }
         .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: #999; }
+
+        /* 图例按钮与面板 */
+        .legend-btn {
+            border: 1px solid #ddd;
+            background: white;
+            color: #555;
+            padding: 6px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-btn:hover { background: #f9f9f9; border-color: #ccc; }
+
+        .legend-panel {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            width: 300px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: none;
+            border: 1px solid #eee;
+            z-index: 100;
+        }
+        .legend-panel.show { display: block; animation: fadeIn 0.2s; }
+        .legend-item { display: flex; gap: 10px; margin-bottom: 12px; font-size: 13px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+        .l-red { background: var(--red); border: 2px solid var(--red-light); }
+        .l-blue { background: var(--blue); border: 2px solid var(--blue-light); }
         
-        /* ========== 时间轴区域 (核心优化) ========== */
+        /* 时间轴区域 */
         .timeline-container {
             background: var(--card);
             border-radius: var(--radius);
@@ -187,7 +203,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 容器本身不滚 */
+            overflow: hidden;
             min-height: 300px;
         }
         
@@ -200,31 +216,26 @@
             color: var(--text-light);
         }
         
-        /* 滚动区域 */
         .timeline-scroll {
             flex: 1;
-            overflow-x: auto; /* 只有这里横向滚动 */
+            overflow-x: auto;
             overflow-y: hidden;
             padding: 40px 20px;
             scroll-behavior: smooth;
-            /* 隐藏滚动条样式 */
             scrollbar-width: thin;
-            scrollbar-color: #ddd transparent;
         }
         
-        /* 轨道：宽度由内容决定 (max-content) */
         .timeline-track {
-            display: flex; /* 改用 flex 布局 */
+            display: flex;
             align-items: center;
-            width: max-content; /* 关键：由子元素撑开 */
+            width: max-content;
             min-width: 100%;
             position: relative;
-            padding: 40px 60px; /* 左右留白 */
-            gap: var(--node-gap); /* 动态间距 */
-            transition: gap 0.3s ease; /* 间距变化动画 */
+            padding: 40px 60px;
+            gap: var(--node-gap);
+            transition: gap 0.3s ease;
         }
         
-        /* 轨道横线 */
         .timeline-track::before {
             content: '';
             position: absolute;
@@ -234,7 +245,7 @@
             z-index: 0;
         }
         
-        /* 节点样式 */
+        /* 节点 */
         .node {
             position: relative;
             z-index: 1;
@@ -242,19 +253,14 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.3s;
-            flex-shrink: 0; /* 防止被压缩 */
+            transition: transform 0.2s;
+            flex-shrink: 0;
             width: auto;
         }
-        
-        .node.hidden {
-            display: none; /* 彻底隐藏，不占位 */
-        }
-        
+        .node.hidden { display: none; }
         .node:hover { transform: translateY(-5px); }
         .node.active { transform: scale(1.1); }
         
-        /* 节点内容 */
         .node-label {
             font-size: 12px;
             font-weight: 600;
@@ -266,7 +272,6 @@
             white-space: nowrap;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
-        
         .node.congress .node-label { color: var(--red); border-color: var(--red-light); }
         .node.plenary .node-label { color: var(--blue); border-color: var(--blue-light); }
         
@@ -276,108 +281,102 @@
             border: 3px solid #ccc;
             border-radius: 50%;
             transition: all 0.3s;
-            position: relative;
         }
-        
         .node.congress .node-dot { border-color: var(--red); background: var(--red-light); }
         .node.plenary .node-dot { border-color: var(--blue); background: var(--blue-light); }
         .node.active .node-dot { background: var(--text); border-color: var(--text); box-shadow: 0 0 0 6px rgba(0,0,0,0.1); }
         
-        .node-year {
-            margin-top: 12px;
-            font-size: 10px;
-            color: #999;
-            font-family: monospace;
-        }
+        .node-year { margin-top: 12px; font-size: 10px; color: #999; font-family: monospace; }
         
-        /* 提示层 */
         .no-results {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #999;
-            display: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #999; display: none;
         }
         .no-results.show { display: block; }
         
-        /* ========== 详情抽屉 (优化体验) ========== */
+        /* 详情抽屉 */
         .drawer-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 900;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 900;
+            opacity: 0; visibility: hidden; transition: all 0.3s;
             backdrop-filter: blur(2px);
         }
-        
         .drawer-overlay.show { opacity: 1; visibility: visible; }
         
         .detail-drawer {
-            position: fixed;
-            top: 0; right: -500px;
-            width: 450px;
-            height: 100vh;
-            background: white;
-            z-index: 950;
+            position: fixed; top: 0; right: -500px;
+            width: 450px; height: 100vh;
+            background: white; z-index: 950;
             box-shadow: -5px 0 25px rgba(0,0,0,0.15);
             transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
-        
         .detail-drawer.show { right: 0; }
         
-        .drawer-header {
-            padding: 30px;
-            color: white;
-            position: relative;
-        }
-        
+        .drawer-header { padding: 30px; color: white; position: relative; flex-shrink: 0; }
         .drawer-header.congress { background: linear-gradient(135deg, var(--red), #b71c1c); }
         .drawer-header.plenary { background: linear-gradient(135deg, var(--blue), #0d47a1); }
         
         .close-drawer {
             position: absolute; top: 15px; right: 15px;
-            background: rgba(255,255,255,0.2);
-            border: none; color: white;
+            background: rgba(255,255,255,0.2); border: none; color: white;
             width: 30px; height: 30px; border-radius: 50%;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
         .close-drawer:hover { background: rgba(255,255,255,0.4); }
         
-        .drawer-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 25px;
-        }
-        
+        .drawer-content { flex: 1; overflow-y: auto; padding: 25px; }
         .detail-block { margin-bottom: 30px; }
         .detail-block h4 { 
             font-size: 12px; color: #999; letter-spacing: 1px; 
-            margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 5px;
+            margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;
         }
         .detail-block p { text-align: justify; font-size: 15px; color: #444; }
+
+        /* 新增：底部导航栏 */
+        .drawer-footer {
+            padding: 15px 25px;
+            border-top: 1px solid #eee;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
         
-        /* ========== 响应式调整 ========== */
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #eee;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: var(--text);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover:not(:disabled) { background: #eee; border-color: #ddd; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; color: #ccc; }
+        
+        /* 响应式 */
         @media (max-width: 768px) {
             .main-container { grid-template-columns: 50px 1fr; }
             .sidebar-width { width: 50px; }
-            
-            /* 移动端详情变成底部弹窗 (Bottom Sheet) */
             .detail-drawer {
                 top: auto; bottom: -100%; right: 0;
-                width: 100%; height: 75vh;
+                width: 100%; height: 80vh;
                 border-radius: 20px 20px 0 0;
                 transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .detail-drawer.show { bottom: 0; right: 0; }
-            
-            .controls { padding: 10px; gap: 10px; }
+            .controls { padding: 10px; gap: 10px; justify-content: space-between; }
             .search-box { width: 100%; order: 3; }
+            .legend-panel { right: auto; left: 0; width: 100%; top: 120%; }
         }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="filter-mode-all">
@@ -398,6 +397,26 @@
                 <button class="filter-btn" data-filter="plenary">全会</button>
             </div>
             
+            <div style="position: relative;">
+                <button class="legend-btn" id="legend-toggle">📖 会议说明</button>
+                <div class="legend-panel" id="legend-panel">
+                    <div class="legend-item">
+                        <div class="legend-dot l-red"></div>
+                        <div>
+                            <strong>党的全国代表大会 (党代会)</strong>
+                            <div style="color:#666; margin-top:2px;">党的最高领导机关，每五年举行一次。负责制定党的纲领路线，选举中央委员会。</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot l-blue"></div>
+                        <div>
+                            <strong>中央委员会全体会议 (全会)</strong>
+                            <div style="color:#666; margin-top:2px;">在党代会闭会期间的领导机构。通常每年至少召开一次，研究具体重大问题。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="search-box">
                 <span class="search-icon">🔍</span>
                 <input type="text" id="search-input" placeholder="搜索会议...">
@@ -409,15 +428,10 @@
                 <span>时间轴</span>
                 <span style="font-size: 0.8em; opacity: 0.7">按住 Shift 滚轮可横向滚动</span>
             </div>
-            
             <div class="timeline-scroll" id="timeline-scroll">
-                <div class="timeline-track" id="timeline-track">
-                    </div>
+                <div class="timeline-track" id="timeline-track"></div>
             </div>
-            
-            <div class="no-results" id="no-results">
-                没有找到匹配的会议
-            </div>
+            <div class="no-results" id="no-results">没有找到匹配的会议</div>
         </div>
     </div>
 </div>
@@ -426,7 +440,7 @@
 <aside class="detail-drawer" id="detail-drawer">
     <div class="drawer-header" id="drawer-header">
         <button class="close-drawer" id="close-drawer">×</button>
-        <h2 id="d-title" style="margin-bottom: 5px; font-size: 1.4em;">会议名称</h2>
+        <h2 id="d-title" style="margin-bottom: 5px; font-size: 1.4em;"></h2>
         <div style="font-size: 0.9em; opacity: 0.9;">
             <span id="d-time"></span> · <span id="d-place"></span>
         </div>
@@ -441,10 +455,14 @@
             <p id="d-significance" style="color: #5d4037;"></p>
         </div>
     </div>
+    <div class="drawer-footer">
+        <button class="nav-btn" id="nav-prev">← 上一会议</button>
+        <button class="nav-btn" id="nav-next">下一会议 →</button>
+    </div>
 </aside>
 
 <script>
-    // ==================== 数据源 ====================
+    // 数据源
     const data = [
         { id: 1, name: '一大', full: '中共一大', time: '1921-07', year: 1921, place: '上海→嘉兴', type: 'congress', desc: '中国共产党第一次全国代表大会，宣告中国共产党正式成立。大会确定党的名称为"中国共产党"，通过了党的第一个纲领。', significance: '标志着中国共产党的诞生，中国革命面貌从此焕然一新。' },
         { id: 2, name: '二大', full: '中共二大', time: '1922-07', year: 1922, place: '上海', type: 'congress', desc: '第一次提出反帝反封建的民主革命纲领，制定了党的第一部章程。', significance: '第一次明确提出党的最高纲领和最低纲领。' },
@@ -488,11 +506,10 @@
 
     data.sort((a, b) => a.time.localeCompare(b.time));
 
-    // ==================== 状态管理 ====================
     let state = {
         filter: 'all',
         search: '',
-        activeId: null
+        visibleIds: [] // 存储当前筛选下可见的 ID 列表，用于上下文导航
     };
 
     const DOM = {
@@ -501,18 +518,18 @@
         scroll: document.getElementById('timeline-scroll'),
         drawer: document.getElementById('detail-drawer'),
         overlay: document.getElementById('drawer-overlay'),
-        noResults: document.getElementById('no-results')
+        noResults: document.getElementById('no-results'),
+        legendPanel: document.getElementById('legend-panel'),
+        btnPrev: document.getElementById('nav-prev'),
+        btnNext: document.getElementById('nav-next')
     };
 
-    // ==================== 初始化与渲染 ====================
-    
     function init() {
         renderNodes();
-        updateView(); // 初始计算一次视图
+        updateView();
         bindEvents();
     }
 
-    // 渲染所有节点（只渲染一次，后续通过 CSS 类显隐）
     function renderNodes() {
         DOM.track.innerHTML = '';
         data.forEach(item => {
@@ -534,13 +551,12 @@
         });
     }
 
-    // 核心视图更新逻辑：筛选节点 -> 重绘年份 -> 滚动监听
     function updateView() {
         const nodes = document.querySelectorAll('.node');
         const visibleYears = new Set();
         let hasVisible = false;
+        state.visibleIds = []; // 重置可见 ID
 
-        // 1. 筛选节点
         nodes.forEach(node => {
             const matchType = state.filter === 'all' || node.dataset.type === state.filter;
             const matchSearch = !state.search || node.dataset.search.includes(state.search);
@@ -549,6 +565,7 @@
             if (isVisible) {
                 node.classList.remove('hidden');
                 visibleYears.add(parseInt(node.dataset.year));
+                state.visibleIds.push(parseInt(node.dataset.id)); // 记录可见ID
                 hasVisible = true;
             } else {
                 node.classList.add('hidden');
@@ -556,15 +573,10 @@
         });
 
         DOM.noResults.classList.toggle('show', !hasVisible);
-
-        // 2. 动态重绘左侧年份导航 (Req 1)
         renderYearNav(Array.from(visibleYears).sort((a,b) => a - b));
-
-        // 3. 更新 Body 类以调整密度 (Req 3)
         document.body.className = `filter-mode-${state.filter}`;
     }
 
-    // 渲染年份导航
     function renderYearNav(years) {
         DOM.yearNav.innerHTML = '';
         years.forEach(year => {
@@ -575,27 +587,25 @@
             div.onclick = () => scrollToYear(year);
             DOM.yearNav.appendChild(div);
         });
-        updateActiveYear(); // 重新计算高亮
+        updateActiveYear();
     }
 
-    // ==================== 交互逻辑 ====================
-
-    // 滚动到指定年份
     function scrollToYear(year) {
-        // 查找该年份下第一个可见的节点
         const targetNode = document.querySelector(`.node[data-year="${year}"]:not(.hidden)`);
         if (targetNode) {
-            // 计算居中位置
-            const scrollLeft = targetNode.offsetLeft - DOM.scroll.offsetWidth / 2 + targetNode.offsetWidth / 2;
-            DOM.scroll.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+            scrollToNode(targetNode);
         }
     }
+    
+    // 通用：滚动到某个节点并居中
+    function scrollToNode(nodeEl) {
+        const scrollLeft = nodeEl.offsetLeft - DOM.scroll.offsetWidth / 2 + nodeEl.offsetWidth / 2;
+        DOM.scroll.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    }
 
-    // 更新左侧高亮年份
     function updateActiveYear() {
         const scrollCenter = DOM.scroll.scrollLeft + DOM.scroll.offsetWidth / 2;
         const visibleNodes = document.querySelectorAll('.node:not(.hidden)');
-        
         let closestNode = null;
         let minDiff = Infinity;
 
@@ -619,13 +629,17 @@
         }
     }
 
-    // 打开详情抽屉 (Req 4)
     function openDrawer(item, nodeEl) {
-        // 高亮节点
         document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
-        nodeEl.classList.add('active');
+        if(!nodeEl) {
+             nodeEl = document.querySelector(`.node[data-id="${item.id}"]`);
+        }
+        if(nodeEl) {
+             nodeEl.classList.add('active');
+             // 打开详情时，自动滚动时间轴使该节点可见（体验更好）
+             scrollToNode(nodeEl);
+        }
 
-        // 填充数据
         document.getElementById('d-title').textContent = item.full;
         document.getElementById('d-time').textContent = formatTime(item.time);
         document.getElementById('d-place').textContent = item.place;
@@ -635,9 +649,42 @@
         const header = document.getElementById('drawer-header');
         header.className = 'drawer-header ' + item.type;
 
-        // 显示抽屉
         DOM.drawer.classList.add('show');
         DOM.overlay.classList.add('show');
+
+        // 更新上下文按钮状态
+        updateNavButtons(item.id);
+    }
+
+    // 更新上一条/下一条按钮
+    function updateNavButtons(currentId) {
+        const currentIndex = state.visibleIds.indexOf(currentId);
+        
+        // 上一条
+        if (currentIndex > 0) {
+            const prevId = state.visibleIds[currentIndex - 1];
+            DOM.btnPrev.disabled = false;
+            DOM.btnPrev.onclick = () => {
+                const prevItem = data.find(d => d.id === prevId);
+                openDrawer(prevItem);
+            };
+        } else {
+            DOM.btnPrev.disabled = true;
+            DOM.btnPrev.onclick = null;
+        }
+
+        // 下一条
+        if (currentIndex < state.visibleIds.length - 1) {
+            const nextId = state.visibleIds[currentIndex + 1];
+            DOM.btnNext.disabled = false;
+            DOM.btnNext.onclick = () => {
+                const nextItem = data.find(d => d.id === nextId);
+                openDrawer(nextItem);
+            };
+        } else {
+            DOM.btnNext.disabled = true;
+            DOM.btnNext.onclick = null;
+        }
     }
 
     function closeDrawer() {
@@ -662,6 +709,22 @@
             });
         });
 
+        // 图例开关
+        const legendBtn = document.getElementById('legend-toggle');
+        legendBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // 防止冒泡关闭
+            DOM.legendPanel.classList.toggle('show');
+            legendBtn.textContent = DOM.legendPanel.classList.contains('show') ? '📖 收起说明' : '📖 会议说明';
+        });
+
+        // 点击页面其他地方关闭图例
+        document.addEventListener('click', (e) => {
+            if (!DOM.legendPanel.contains(e.target) && e.target !== legendBtn) {
+                DOM.legendPanel.classList.remove('show');
+                legendBtn.textContent = '📖 会议说明';
+            }
+        });
+
         // 搜索
         let timer;
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -672,9 +735,7 @@
             }, 300);
         });
 
-        // 滚动监听
         DOM.scroll.addEventListener('scroll', () => {
-             // 节流处理
             if(!timer) {
                 timer = setTimeout(() => {
                     updateActiveYear();
@@ -683,12 +744,10 @@
             }
         });
 
-        // 关闭详情
         document.getElementById('close-drawer').onclick = closeDrawer;
         DOM.overlay.onclick = closeDrawer;
     }
 
-    // 启动
     init();
 
 </script>
