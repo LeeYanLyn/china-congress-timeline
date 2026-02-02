@@ -1,4 +1,4 @@
-# 🕰️ China Congress Timeline - 中国共产党重要会议时间轴
+# China Congress Timeline - 中国共产党重要会议时间轴
 
 [![GitHub Pages](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://leeyanlyn.github.io/china-congress-timeline/)
 ![Platform](https://img.shields.io/badge/Platform-Web-blue.svg)
